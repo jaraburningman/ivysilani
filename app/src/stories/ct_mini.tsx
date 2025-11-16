@@ -6,12 +6,14 @@
 /*
  * Jara: Lint - React is declared but its value is never read
  */
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import { useState } from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 /*
  * Jara: Types should be imported as type-only
  */
+// import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 import { type ControllerRenderProps, type FieldPath, type FieldValues } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -36,7 +38,9 @@ export type ImageGalleryDialogProps<TFieldValues extends FieldValues> = {
 };
 
 /*
- * Jara: Hardcoded path? Bug - missing slash.
+ * Jara:
+ * 1. Hardcoded path?!
+ * 2. Bug - missing slash.
  */
 // const imageStoreLocation = '/images/extra_streams';
 const imageStoreLocation = 'images/extra_streams/';
@@ -63,13 +67,13 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
                                                                        images,
                                                                      }: ImageGalleryDialogProps<TFieldValues>) => {
   /*
-   * Jara: Corner-case - consider avoiding undefined: value ?? ''
+   * Jara: minor - consider avoiding undefined: value ?? ''
    */
   const [selectedImage, setSelectedImage] = useState<string>(value);
   /*
    * Jara:
    * 1. Recreated on every render. Move outside the component or use useMemo hook.
-   * Visual glitches - flickering, scrolls up on select - see staged demo.
+   * Visual glitches - flickering - see staged demo.
    * 2. As src and selectedImage are only used in the ternary expression,
    * 'isSelected' boolean prop would be a more elegant API.
    * Usage: <Image isSelected={selectedImage === item.src}/>
@@ -86,7 +90,7 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
 
   const imagesArr: ImageProps[] = [];
   /*
-   * Jara: very minor: consider map()
+   * Jara: very minor - consider map()
    */
   for (let i = 0; i < images.length; i++) {
     const name = images[i];
@@ -117,6 +121,10 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
         </div>
       )}
       <Dialog
+        /*
+         * Jara: minor - deprecated
+         * https://mui.com/material-ui/api/dialog/#dialog-prop-PaperProps
+         */
         PaperProps={{
           sx: {
             maxWidth: '960px',
@@ -172,12 +180,12 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
             <Button
               variant="contained"
               /*
-              * Jara: Not nice / incorrect logic
+              * Jara: Not nice, even incorrect logic
               * onSave returns void => you pass undefined to onChange.
               * onSave(selectedImage); // returns undefined
               * onChange(undefined) // weird, sets the form to undefined
               * Suggestion:
-              * onChange(selectedImage); // forms receives image
+              * onChange(selectedImage); // form receives image
               * if (onSave) { // if onSave is provided, call it.
               *   onSave(selectedImage);
               * }
