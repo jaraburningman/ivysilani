@@ -11,7 +11,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "predeploy": "npm run build-storybook",
-    "deploy": "gh-pages -d storybook-static"
+    "deploy": "npx gh-pages -d storybook-static"
   },
   "dependencies": {
     "@mui/icons-material": "^7.3.5",

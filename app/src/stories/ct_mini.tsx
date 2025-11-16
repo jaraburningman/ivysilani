@@ -3,11 +3,15 @@
 // ct_mini_cr_story.tsx je přiložen hlavně pro kontext, v něm není třeba problematická místa přímo hledat
 // have fun!
 
-// Jara: React is declared but its value is never read.
+/*
+ * Jara: Lint - React is declared but its value is never read
+ */
 import React, { useState } from 'react';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-// Jara: declaration of import of a type
+/*
+ * Jara: Types should be imported as type-only
+ */
 import { type ControllerRenderProps, type FieldPath, type FieldValues } from 'react-hook-form';
 import { styled } from '@mui/material/styles';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -17,6 +21,9 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Box from '@mui/system/Box';
 import ImageIcon from '@mui/icons-material/Image';
+/*
+ * Jara: Jů&Hele not available ;)
+ */
 // import { getPublicConfig } from '@muf/config';
 
 export type ImageGalleryDialogProps<TFieldValues extends FieldValues> = {
@@ -28,13 +35,16 @@ export type ImageGalleryDialogProps<TFieldValues extends FieldValues> = {
   showGalleryDialog: boolean;
 };
 
-// Jara: missing slash in the path
+/*
+ * Jara: Hardcoded path? Bug - missing slash.
+ */
 // const imageStoreLocation = '/images/extra_streams';
 const imageStoreLocation = 'images/extra_streams/';
 
-// Jara: fix to make it work with storybook
+/*
+ * Jara: RT hotfix to make it work local+staged as Jů&Hele not available
+ */
 // const { BASE_URL_STATIC } = getPublicConfig();
-// const BASE_URL_STATIC  = 'http://localhost:6006';
 const BASE_URL_STATIC  = './';
 
 interface ImageProps {
@@ -52,8 +62,19 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
                                                                        alt,
                                                                        images,
                                                                      }: ImageGalleryDialogProps<TFieldValues>) => {
+  /*
+   * Jara: Corner-case - consider avoiding undefined: value ?? ''
+   */
   const [selectedImage, setSelectedImage] = useState<string>(value);
-
+  /*
+   * Jara:
+   * 1. Recreated on every render. Move outside the component or use useMemo hook.
+   * Visual glitches - flickering, scrolls up on select - see staged demo.
+   * 2. As src and selectedImage are only used in the ternary expression,
+   * 'isSelected' boolean prop would be a more elegant API.
+   * Usage: <Image isSelected={selectedImage === item.src}/>
+/>
+   */
   const Image = styled('img')<{
     selectedImage: string;
     src: string;
@@ -64,6 +85,9 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
   `;
 
   const imagesArr: ImageProps[] = [];
+  /*
+   * Jara: very minor: consider map()
+   */
   for (let i = 0; i < images.length; i++) {
     const name = images[i];
     imagesArr.push({
@@ -107,14 +131,27 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
         <DialogTitle sx={{ pb: 0 }}>Vybrat obrázek z knihovny</DialogTitle>
         <DialogContent>
           <ImageList cols={4}>
+            {
+              /*
+              * Jara: Type safety :any > :ImageProps
+              */
+            }
             {imagesArr.map((item: any) => (
               <ImageListItem
                 key={item.src}
                 onClick={() => {
+                  /*
+                   * Jara: Avoid log in production
+                   */
                   console.log('item.src', item.src);
                   setSelectedImage(item.src);
                 }}
               >
+                {
+                  /*
+                  * Jara: Accessibility - add alt value
+                  */
+                }
                 <Image
                   alt=""
                   className="MuiImageListItem-img"
@@ -126,9 +163,26 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
           </ImageList>
         </DialogContent>
         <DialogActions>
+          {
+            /*
+            * Jara: Unnecessary <> fragment?
+            */
+          }
           <>
             <Button
               variant="contained"
+              /*
+              * Jara: Not nice / incorrect logic
+              * onSave returns void => you pass undefined to onChange.
+              * onSave(selectedImage); // returns undefined
+              * onChange(undefined) // weird, sets the form to undefined
+              * Suggestion:
+              * onChange(selectedImage); // forms receives image
+              * if (onSave) { // if onSave is provided, call it.
+              *   onSave(selectedImage);
+              * }
+              * onClose();
+              */
               onClick={() => {
                 onChange(onSave ? onSave(selectedImage) : selectedImage);
                 onClose();
