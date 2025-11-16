@@ -68,6 +68,7 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
                                                                      }: ImageGalleryDialogProps<TFieldValues>) => {
   /*
    * Jara: minor - consider avoiding undefined: value ?? ''
+   * or even set a default image for better UX.
    */
   const [selectedImage, setSelectedImage] = useState<string>(value);
   /*
@@ -102,6 +103,9 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
   return (
     <>
       {value ? (
+        /*
+         * Jara: Hardcoded dimensions?! Consider responsivity.
+         */
         <img alt={alt} className="MuiImageListItem-img" src={value} width="313" />
       ) : (
         <div>
@@ -180,17 +184,17 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
             <Button
               variant="contained"
               /*
-              * Jara: Not nice, even incorrect logic
-              * onSave returns void => you pass undefined to onChange.
-              * onSave(selectedImage); // returns undefined
-              * onChange(undefined) // weird, sets the form to undefined
-              * Suggestion:
-              * onChange(selectedImage); // form receives image
-              * if (onSave) { // if onSave is provided, call it.
-              *   onSave(selectedImage);
-              * }
-              * onClose();
-              */
+               * Jara: Not nice, even incorrect logic
+               * onSave returns void => you pass undefined to onChange.
+               * onSave(selectedImage); // returns undefined
+               * onChange(undefined) // weird, sets the form to undefined
+               * Suggestion:
+               * onChange(selectedImage); // form receives image
+               * if (onSave) { // if onSave is provided, call it.
+               *   onSave(selectedImage);
+               * }
+               * onClose();
+               */
               onClick={() => {
                 onChange(onSave ? onSave(selectedImage) : selectedImage);
                 onClose();
@@ -200,6 +204,11 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
             </Button>
           </>
           <Button autoFocus onClick={onClose}>
+            {
+            /*
+             * Jara: Typo, i :)
+             */
+            }
             Zrušít
           </Button>
         </DialogActions>
