@@ -80,7 +80,7 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
    * 2. As src and selectedImage are only used in the ternary expression,
    * 'isSelected' boolean prop would be a more elegant API.
    * Usage: <Image isSelected={selectedImage === item.src}/>
-/>
+   * 3. Hardcoded css?! consider design tokens/css vars
    */
   const Image = styled('img')<{
     selectedImage: string;
@@ -130,6 +130,7 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
         /*
          * Jara: minor - deprecated
          * https://mui.com/material-ui/api/dialog/#dialog-prop-PaperProps
+         * Hadrcoded dimensions. See above.
          */
         PaperProps={{
           sx: {
