@@ -67,8 +67,10 @@ export const ImageGalleryDialog = <TFieldValues extends FieldValues>({
                                                                        images,
                                                                      }: ImageGalleryDialogProps<TFieldValues>) => {
   /*
-   * Jara: minor - consider avoiding undefined: value ?? ''
-   * or even set a default image for better UX.
+   * Jara: minor - consider avoiding undefined. Options:
+   * 1. value ?? ''
+   * 2. set a default image for better UX.
+   * 3. Make it a controlled component by adding a value prop to the Gallery component
    */
   const [selectedImage, setSelectedImage] = useState<string>(value);
   /*
